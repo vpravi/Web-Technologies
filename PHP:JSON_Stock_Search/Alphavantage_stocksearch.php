@@ -5,70 +5,107 @@
 <title>Stock Search</title>
 </head>
 <style>
+	html,body{
+		width: 100%;
+	    height: 1282px;
+	    margin: 0px;
+	    padding: 0px;
+	    overflow-x: hidden; 
+	    overflow-y: auto ;
+	}
    #container{
-        width: 25%;
+    width: 25%;
+    margin-top:10px;
    }
    body{
-   		font-family: sans-serif;
+   	font-family: sans-serif;
    }
    form {
-	    border: solid 1px #d4cece;
-	    border-radius: 3px;
-	    padding: 10px 15px;
-	    background-color: whitesmoke;
-	    margin: 0 auto;
-	    width: 100%;
-	    margin-left: 142%;
-	    margin-bottom: 10px;
-	    font-size: 17px;
-	    font-family: serif;
+	border: solid 1px #d4cece;
+	border-radius: 3px;
+	padding: 10px 15px;
+	background-color: whitesmoke;
+	margin: 0 auto;
+	width: 100%;
+	margin-left: 142%;
+	margin-bottom: 10px;
+	font-size: 17px;
+	font-family: serif;
    }
    form p{
-   		margin: 0;
-    	margin-bottom: 25px;
-    	font-style: italic;
+   	margin: 0;
+    margin-bottom: 25px;
+    font-style: italic;
    }
    h2{
-	   	margin: 0;
-	    font-size: 30px;
-	    text-align: center;
+	margin: 0;
+	font-size: 30px;
+	text-align: center;
    }
    hr{
-      	margin-bottom: 20px;
+    margin-bottom: 20px;
    }
    #table{
-        margin: 0 auto;
-    	font-size: 13px;
+	margin: 0 auto;
+    font-size: 13px;
    }
    #table table {
-   	    border: solid 1px #d4cece;
-		border-collapse: collapse;
-		margin-left: 14.4%;
-		width: 71.3%;
-		background-color: #fbfbfb;
-		text-align: center;
+	border: solid 1px #d4cece;
+	border-collapse: collapse;
+	margin-left: 14.9%;
+	width: 70.4%;
+	background-color: #fbfbfb;
+	text-align: center;
    }
    #table .header{
-	   	background-color: #e8e6e6;
-	    text-align: left;
-	    font-weight: bold;
+	background-color: #e8e6e6;
+	text-align: left;
+	font-weight: bold;
    }
    #table td {
    	padding:3px;
    }
    td p{
-   		margin: 0;
+   	margin: 0;
    }
    td a{
-   		text-decoration: none;
-   		margin:10px;
+   	text-decoration: none;
+   	margin:10px;
    }
    #graph{
-	   	width: 1000px;
-	    height: 600px;
-	    margin: 0 auto;
-	    border: solid 1px lightgrey;
-	    margin-top: 14px;
+	width: 1000px;
+	height: 600px;
+	margin: 0 auto;
+	border: solid 1px #d4cece;
+	margin-top: 14px;
+   }
+   #newss{
+   	border: solid 1px #d4cece;
+    margin-top: 13px;
+    margin-left: 14.4%;
+    width: 71.4%;
+   }
+   #news td{
+   	border-bottom: solid 1px #d4cece;
+    padding: 5px;
+    font-size: 13px;
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+   }
+   #news a{
+   	text-decoration: none;
+   	color:blue;
+   }
+   .greyarrow{
+   	width: 40px;
+	height: 20px;
+	margin-left: 48%;
+	margin-top: 10px;
+   }
+   .toggletext{
+	margin-left: 44.5%;
+   	font-size: 12px;
+    color: #a29c9c;
    }
 </style>
 <script type="text/javascript">
@@ -603,8 +640,47 @@
 		        }]
 	    	});
 		}
-	});
-}
+		});
+	}
+	function loadnews(titles,links,dates){
+		var html = "";
+		html+="<table id='newss'>";
+		for (i=0;i<5;i++){
+			html+="<tr>";
+			html+="<td><a href='"+links[i]+"' target='_blank'>"+titles[i]+"</a>&nbsp;&nbsp;Publicated Time: "+dates[i]+"</td>"
+			html+="</tr>";
+		}
+		html+="</table>"
+		document.write(html);
+	}
+	function show(){
+		var x = document.getElementById("news");
+		if (x.style.display === "none") {
+        	x.style.display = "block";
+    	} 
+    	var y = document.getElementById("first");
+    	if (y.style.display ==="block"){
+    		y.style.display = "none";
+    	}
+    	var z = document.getElementById("second");
+    	if (z.style.display ==="none"){
+    		z.style.display = "block";
+    	}
+	}
+	function hide(){
+		var x = document.getElementById("news");
+		if (x.style.display === "block") {
+        	x.style.display = "none";
+    	} 
+    	var y = document.getElementById("first");
+    	if (y.style.display ==="none"){
+    		y.style.display = "block";
+    	}
+    	var z = document.getElementById("second");
+    	if (z.style.display ==="block"){
+    		z.style.display = "none";
+    	}
+	}
  </script>
 <body>
 	<div id="container">
@@ -745,7 +821,47 @@
 						echo 'document.getElementById("bbands").addEventListener("click", function(){bbandsgraph(\''.$value.'\');});';
 						echo 'document.getElementById("macd").addEventListener("click", function(){macdgraph(\''.$value.'\');});';
 						echo '</script>';
-						echo '</div>';		
+						echo '</div>';	
+						$url = 'https://seekingalpha.com/api/sa/combined/'.$value.'.xml';
+						$xml = simplexml_load_file($url);
+						$item=$xml->channel->item;
+						$flag = 0;
+						$titles = array();
+						$links = array();
+						$dates = array();
+						foreach ($item as $node){ 
+							$title = (string) $node->title;
+							$link = (string)$node->link;
+							$date = (string)$node->pubDate;
+							if ($link == 'https://seekingalpha.com/symbol/AAPL/news?source=feed_symbol_AAPL' or $link == 'https://seekingalpha.com'){
+								continue;
+							}
+							else{
+								$flag+=1;
+								if ($flag > 5){
+									break;
+								}
+								else{
+									array_push($titles,$title);
+									array_push($links,$link);
+									array_push($dates,$date);
+								}
+							}
+						}
+						$news_titles = json_encode($titles);
+						$news_dates = json_encode($dates);
+						$news_links= json_encode($links,JSON_UNESCAPED_SLASHES);
+						echo '<span id="first" onclick="show()" style="display:block">';
+						echo '<p class = "toggletext">Click to show stock news</p>';
+						echo '<img class="greyarrow" src="Gray_Arrow_Down.png">';
+						echo '</span>';
+						echo '<span id="second" onclick="hide()"style="display:none;">';
+						echo '<p class = "toggletext">Click to hide stock news</p>';
+						echo '<img class="greyarrow" src="Gray_Arrow_Up.png">';
+						echo '</span>';
+						echo '<div id="news" style="display:none">';
+						echo '<script type="text/javascript">loadnews('.$news_titles.','.$news_links.','.$news_dates.');</script>';
+						echo '</div>';
 	                }
 				}
 				else{
