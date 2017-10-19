@@ -27,19 +27,19 @@
 	font-size: 17px;
 	font-family: serif;
 	height: 170px;
-   }
-   form p{
-   	margin: 0;
-    margin-top:20px;
-    font-style: italic;
-    float:left
-   }
-   h2{
+	}
+	form p{
+		margin: 0;
+	margin-top:20px;
+	font-style: italic;
+	float:left
+	}
+	h2{
 	margin: 0;
 	font-size: 30px;
 	text-align: center;
 	font-style:italic;
-   }
+	}
    hr{
     margin-bottom: 20px;
     border: solid 1px lightgrey;
@@ -58,6 +58,7 @@
 	background-color: #e8e6e6;
 	text-align: left;
 	font-weight: bold;
+	width: 200px;
    }
    #table td {
    	padding:3px;
@@ -96,14 +97,20 @@
 	height: 20px;
    }
    .toggletext{
+   	margin-top:0;
    	font-size: 12px;
     color: #a29c9c;
+    padding-top: 15px;
    }
    .btns{
    	border-radius: 5px;
    	padding: 3px 10px;
    	background-color: white;
     border: solid 0.6px lightgrey;
+   }
+   #first,#second{
+   	background: linear-gradient(#e6e5e5,white);
+   	width: 1002px;
    }
 </style>
 <script type="text/javascript">
@@ -320,7 +327,7 @@
 		});
 	}
 	function bbandsgraph(value){
-		var url = 'https://www.alphavantage.co/query?function=bbands&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function=BBANDS&symbol='+value+'&interval=daily&time_period=5&series_type=close&nbdevup=3&nbdevdn=3&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
 		var getJSON = function(url, callback) {
 		    var xhr = new XMLHttpRequest();
 		    xhr.open('GET', url, true);
@@ -535,7 +542,7 @@
 		});
 	}
 	function twolinegraphs(value,api_indicator,indicator){
-		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&slowkmatype=1&slowdmatype=1&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
 		var getJSON = function(url, callback) {
 		    var xhr = new XMLHttpRequest();
 		    xhr.open('GET', url, true);
@@ -681,12 +688,12 @@
     		z.style.display = "none";
     	}
 	}
- </script>
+</script>
 <center><body>
 	<div id="container">
-	    <form method="post">
-	    	<h2>Stock Search</h2>
-	    	<hr>
+		<form method="post">
+			<h2>Stock Search</h2>
+			<hr>
 			Enter the Stock Ticker Symbol*: <input type="text" name="symbol" style="margin-bottom: 8px;" id="s1" value=""<br>
 			<input class="btns" type = "submit" name="Search" value="Search" style="margin-left: 123px;">
 			<input class="btns" type = "reset" name="Clear" value="Clear" id="del" style="padding:3px 13px;">
@@ -694,101 +701,103 @@
 		</form>
 	</div>
 	<div id="content">
-	<script type="text/javascript">
+		<script type="text/javascript">
+			<?php
+			$name = isset($_POST['symbol']) ? $_POST['symbol'] : '';
+			?>	
+			var elem = document.getElementById("s1");
+			var something=<?php echo json_encode($name); ?>;
+			elem.value = something;
+			document.getElementById("del").addEventListener("click",function(){
+				document.getElementById("content").innerHTML="";
+			});
+		</script>
 		<?php
-		$name = isset($_POST['symbol']) ? $_POST['symbol'] : '';
-		?>	
-		var elem = document.getElementById("s1");
-		var something=<?php echo json_encode($name); ?>;
-		elem.value = something;
-		document.getElementById("del").addEventListener("click",function(){
-			document.getElementById("content").innerHTML="";
-		});
-	</script>
-	<?php
-		date_default_timezone_set('America/New_York');
-		if (isset($_POST["symbol"])){
-		 	$value = $_POST["symbol"]; 
-		 	if ($value == ""){
-		 		echo '<script language="javascript">';
-				echo 'alert("Please enter a value")';
-				echo '</script>';
-		 	}
-		 	else{
-				$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=T9B64Y0EZDLS1SKT&outputsize=full');
-				$obj = json_decode($json,true);
-				echo '<div id = "table">';
-				echo '<table border ="1px" id="infoTable">';
-				if ($obj["Error Message"]){
-					echo '<tr>';
-						echo '<td>'.'Error'.'</td>';
-	                    echo '<td>' . 'Error.NO record has been found,please enter a valid symbol' . '</td>';
-	                    echo '</tr>';
-	                }else{
-		                	$header = $obj["Meta Data"];
-		                	$timestamp = $header["3. Last Refreshed"];
-		                	$Timeseriesvalues = $obj["Time Series (Daily)"];
-		                	$timekeys = array_keys($Timeseriesvalues);
-		                	$lastsession = $Timeseriesvalues[$timekeys[0]];
-		                	$previoussession = $Timeseriesvalues[$timekeys[1]];
-		                	$change = $lastsession["4. close"]-$previoussession["4. close"];
-		                	$changepercent = ($change/$lastsession["4. close"])*100;
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Stock Ticker Symbol'.'</td>';
-		                	echo '<td>'.$header["2. Symbol"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Close'.'</td>';
-		                	echo '<td>'.$lastsession["4. close"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Open'.'</td>';
-		                	echo '<td>'.$lastsession["1. open"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Previous Close'.'</td>';
-		                	echo '<td>'.$previoussession["4. close"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Change'.'</td>';
-		                	if ($change>0){
-		                		echo '<td>'.round($change,2).'<img src="Green_Arrow_Up.png" style="width:10px;margin-left:10px;"></td>';
-		                	}else{
-		                		echo '<td>'.round($change,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
-		                	}
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Change Percent'.'</td>';
-		                	if ($changepercent>0){
-		                		echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Green_Arrow_Up.png"></td>';
-		                	}else{
-		                		echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
-		                	}
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Day\'s Range'.'</td>';
-		                	echo '<td>'.$lastsession["3. low"].'-'.$lastsession["2. high"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Volume'.'</td>';
-		                	echo '<td>'.$lastsession["5. volume"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Timestamp'.'</td>';
-		                	echo '<td>'.$header["3. Last Refreshed"].'</td>';
-		                	echo '</tr>';
-		                	echo '<tr>';
-		                	echo '<td class="header">'.'Indicators'.'</td>';
-		                	echo '<td>'.'<p><a href="javascript:void(0);" id="price">Price</a>&nbsp;<a href="javascript:void(0);" id="sma">SMA</a>&nbsp;<a href="javascript:void(0);" id="ema">EMA</a>&nbsp;<a href="javascript:void(0);" id="stoch">STOCH</a>&nbsp;<a href="javascript:void(0);" id="rsi">RSI</a>&nbsp;<a href="javascript:void(0);" id="adx">ADX</a>&nbsp;<a href="javascript:void(0);" id="cci">CCI</a>&nbsp;<a href="javascript:void(0);" id="bbands">BBANDS</a>&nbsp;<a href="javascript:void(0);" id="macd">MACD</a>'.'</td>';
-		                	echo '</tr>';
-		                	echo '</table></div>';
-		                	$price = array();
-		                	$dates = array();
-		                	$vol = array();
-		                	for ($x = 0; $x < 120; $x++) {
-		                		$lastsession = $Timeseriesvalues[$timekeys[$x]];
-		    					array_push($price,$lastsession["4. close"]);
-		    					array_push($vol,$lastsession["5. volume"]);
+			date_default_timezone_set('America/New_York');
+			if (isset($_POST["symbol"])){
+			 	$value = $_POST["symbol"]; 
+			 	if ($value == ""){
+			 		echo '<script language="javascript">';
+					echo 'alert("Please enter a value")';
+					echo '</script>';
+			 	}
+			 	else{
+					$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=T9B64Y0EZDLS1SKT&outputsize=full');
+					$obj = json_decode($json,true);
+					if($obj){
+						echo '<div id = "table">';
+						echo '<table border ="1px" id="infoTable">';
+						if ($obj["Error Message"]){
+							echo '<tr>';
+							echo '<td class="header">'.'Error'.'</td>';
+							echo '<td>' . 'Error.NO record has been found,please enter a valid symbol' . '</td>';
+							echo '</tr>';
+						}
+						else{
+							$header = $obj["Meta Data"];
+							$timestamp = $header["3. Last Refreshed"];
+							$Timeseriesvalues = $obj["Time Series (Daily)"];
+							$timekeys = array_keys($Timeseriesvalues);
+							$lastsession = $Timeseriesvalues[$timekeys[0]];
+							$previoussession = $Timeseriesvalues[$timekeys[1]];
+							$change = $lastsession["4. close"]-$previoussession["4. close"];
+							$changepercent = ($change/$lastsession["4. close"])*100;
+							echo '<tr>';
+							echo '<td class="header">'.'Stock Ticker Symbol'.'</td>';
+							echo '<td>'.$header["2. Symbol"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Close'.'</td>';
+							echo '<td>'.$lastsession["4. close"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Open'.'</td>';
+							echo '<td>'.$lastsession["1. open"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Previous Close'.'</td>';
+							echo '<td>'.$previoussession["4. close"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Change'.'</td>';
+							if ($change>0){
+								echo '<td>'.round($change,2).'<img src="Green_Arrow_Up.png" style="width:10px;margin-left:10px;"></td>';
+							}else{
+								echo '<td>'.round($change,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
+							}
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Change Percent'.'</td>';
+							if ($changepercent>0){
+								echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Green_Arrow_Up.png"></td>';
+							}else{
+								echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
+							}
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Day\'s Range'.'</td>';
+							echo '<td>'.$lastsession["3. low"].'-'.$lastsession["2. high"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Volume'.'</td>';
+							echo '<td>'.$lastsession["5. volume"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Timestamp'.'</td>';
+							echo '<td>'.$header["3. Last Refreshed"].'</td>';
+							echo '</tr>';
+							echo '<tr>';
+							echo '<td class="header">'.'Indicators'.'</td>';
+							echo '<td>'.'<p><a href="javascript:void(0);" id="price">Price</a>&nbsp;<a href="javascript:void(0);" id="sma">SMA</a>&nbsp;<a href="javascript:void(0);" id="ema">EMA</a>&nbsp;<a href="javascript:void(0);" id="stoch">STOCH</a>&nbsp;<a href="javascript:void(0);" id="rsi">RSI</a>&nbsp;<a href="javascript:void(0);" id="adx">ADX</a>&nbsp;<a href="javascript:void(0);" id="cci">CCI</a>&nbsp;<a href="javascript:void(0);" id="bbands">BBANDS</a>&nbsp;<a href="javascript:void(0);" id="macd">MACD</a>'.'</td>';
+							echo '</tr>';
+							echo '</table></div>';
+							$price = array();
+							$dates = array();
+							$vol = array();
+							for ($x = 0; $x < 120; $x++) {
+								$lastsession = $Timeseriesvalues[$timekeys[$x]];
+								array_push($price,$lastsession["4. close"]);
+								array_push($vol,$lastsession["5. volume"]);
 							} 
 							$n = sizeof($timekeys);
 							for ($i = 0; $i < 120; $i++){
@@ -835,48 +844,51 @@
 							echo '</div>';	
 							$url = 'https://seekingalpha.com/api/sa/combined/'.$value.'.xml';
 							$xml = simplexml_load_file($url);
-							$item=$xml->channel->item;
-							$flag = 0;
-							$titles = array();
-							$links = array();
-							$dates = array();
-							foreach ($item as $node){ 
-								$title = (string) $node->title;
-								$link = (string)$node->link;
-								$date = (string)$node->pubDate;
-								if ($link == 'https://seekingalpha.com/symbol/AAPL/news?source=feed_symbol_AAPL' or $link == 'https://seekingalpha.com'){
-									continue;
-								}
-								else{
-									$flag+=1;
-									if ($flag > 5){
-										break;
+							if($xml){
+								$item=$xml->channel->item;
+								$flag = 0;
+								$titles = array();
+								$links = array();
+								$dates = array();
+								foreach ($item as $node){ 
+									$title = (string) $node->title;
+									$link = (string)$node->link;
+									$date = (string)$node->pubDate;
+									if ($link == 'https://seekingalpha.com/symbol/AAPL/news?source=feed_symbol_AAPL' or $link == 'https://seekingalpha.com'){
+										continue;
 									}
 									else{
-										array_push($titles,$title);
-										array_push($links,$link);
-										array_push($dates,$date);
+										$flag+=1;
+										if ($flag > 5){
+											break;
+										}
+										else{
+											array_push($titles,$title);
+											array_push($links,$link);
+											array_push($dates,$date);
+										}
 									}
 								}
-							}
-							$news_titles = json_encode($titles);
-							$news_dates = json_encode($dates);
-							$news_links= json_encode($links,JSON_UNESCAPED_SLASHES);
-							echo '<span id="first" onclick="show()" style="display:block">';
-							echo '<p class = "toggletext">Click to show stock news</p>';
-							echo '<img class="greyarrow" src="Gray_Arrow_Down.png">';
-							echo '</span>';
-							echo '<span id="second" onclick="hide()"style="display:none;">';
-							echo '<p class = "toggletext">Click to hide stock news</p>';
-							echo '<img class="greyarrow" src="Gray_Arrow_Up.png">';
-							echo '</span>';
-							echo '<div id="news" style="display:none">';
-							echo '<script type="text/javascript">loadnews('.$news_titles.','.$news_links.','.$news_dates.');</script>';
-							echo '</div>';
-					}
-			}
-	    }       	                
-	?>
+								$news_titles = json_encode($titles);
+								$news_dates = json_encode($dates);
+								$news_links= json_encode($links,JSON_UNESCAPED_SLASHES);
+								echo '<span id="first" onclick="show()" style="display:block">';
+								echo '<p class = "toggletext">Click to show stock news</p>';
+								echo '<img class="greyarrow" src="Gray_Arrow_Down.png">';
+								echo '</span>';
+								echo '<span id="second" onclick="hide()"style="display:none;">';
+								echo '<p class = "toggletext">Click to hide stock news</p>';
+								echo '<img class="greyarrow" src="Gray_Arrow_Up.png">';
+								echo '</span>';
+								echo '<div id="news" style="display:none">';
+								echo '<script type="text/javascript">loadnews('.$news_titles.','.$news_links.','.$news_dates.');</script>';
+								echo '</div>';	
+							}		
+						}
+					} 
+				} 
+			}	
+		?>
 	</div>
 </body></center>
 </html>
