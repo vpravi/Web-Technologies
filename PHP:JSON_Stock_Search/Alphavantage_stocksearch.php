@@ -10,14 +10,14 @@
 	margin: 0px;
 	padding: 0px;
 	}
-   #container{
-    width: 500px;
-    margin-top:10px;
-   }
-   body{
-   	font-family: sans-serif;
-   }
-   form {
+	#container{
+	width: 500px;
+	margin-top:10px;
+	}
+	body{
+	font-family: sans-serif;
+	}
+	form {
 	border: solid 1px #d4cece;
 	border-radius: 3px;
 	padding: 10px 15px;
@@ -27,103 +27,103 @@
 	font-size: 17px;
 	font-family: serif;
 	height: 170px;
-   }
-   form p{
-   	margin: 0;
-    margin-top:20px;
-    font-style: italic;
-    float:left;
+	}
+	form p{
+	margin: 0;
+	margin-top:20px;
+	font-style: italic;
+	float:left;
 	margin-left: 20px;
-   }
-   h2{
+	}
+	h2{
 	margin: 0;
 	font-size: 30px;
 	text-align: center;
 	font-style:italic;
-   }
-   hr{
-    margin-bottom: 20px;
-    border: solid 1px lightgrey;
-   }
-   #table{
-    font-size: 13px;
-   }
-   #table table {
+	}
+	hr{
+	margin-bottom: 20px;
+	border: solid 1px lightgrey;
+	}
+	#table{
+	font-size: 13px;
+	}
+	#table table {
 	border: solid 1px #d4cece;
 	border-collapse: collapse;
 	width: 1000px;
 	background-color: #fbfbfb;
 	text-align: center;
-   }
-   #table .header{
+	}
+	#table .header{
 	background-color: #e8e6e6;
 	text-align: left;
 	font-weight: bold;
 	width: 200px;
 	border-bottom:solid 1px #d4cece;
-   	border-right:solid 1px #d4cece;
-   }
-   #table .results{
+	border-right:solid 1px #d4cece;
+	}
+	#table .results{
 	border-bottom:solid 1px #d4cece;
-   }
-   #table td {
-   	padding:3px;
-   }
-   #table tr:last-child td {
-   	border-bottom:0;
-   }
+	}
+	#table td {
+	padding:3px;
+	}
+	#table tr:last-child td {
+	border-bottom:0;
+	}
 	#news tr:last-child td {
 	border-bottom: 0;
 	}
-   td p{
-   	margin: 0;
-   }
-   td a{
-   	text-decoration: none;
-   	margin:10px;
-   }
-   #graph{
+	td p{
+	margin: 0;
+	}
+	td a{
+	text-decoration: none;
+	margin:10px;
+	}
+	#graph{
 	width: 1000px;
 	height: 600px;
 	border: solid 1px #d4cece;
 	margin-top: 14px;
-   }
-   #newss{
-   	border: solid 1px #d4cece;
-    margin-top: 13px;
-    width: 1000px;
-   }
-   #news td{
-   	border-bottom: solid 1px #d4cece;
-    padding: 5px;
-    font-size: 13px;
-    font-family: sans-serif;
-    background-color: #f9f9f9;
-   }
-   #news a{
-   	text-decoration: none;
-   	color:blue;
-   }
-   .greyarrow{
-   	width: 40px;
+	}
+	#newss{
+	border: solid 1px #d4cece;
+	margin-top: 13px;
+	width: 1000px;
+	}
+	#news td{
+	border-bottom: solid 1px #d4cece;
+	padding: 5px;
+	font-size: 13px;
+	font-family: sans-serif;
+	background-color: #f9f9f9;
+	}
+	#news a{
+	text-decoration: none;
+	color:blue;
+	}
+	.greyarrow{
+	width: 40px;
 	height: 20px;
-   }
-   .toggletext{
-   	margin-top:0;
-   	font-size: 12px;
-    color: #a29c9c;
-    padding-top: 15px;
-   }
-   .btns{
-   	border-radius: 5px;
-   	padding: 3px 10px;
-   	background-color: white;
-    border: solid 0.6px lightgrey;
-   }
-   #first,#second{
-   	background: linear-gradient(#e6e5e5,white);
-   	width: 1002px;
-   }
+	}
+	.toggletext{
+	margin-top:0;
+	font-size: 12px;
+	color: #a29c9c;
+	padding-top: 15px;
+	}
+	.btns{
+	border-radius: 5px;
+	padding: 3px 10px;
+	background-color: white;
+	border: solid 0.6px lightgrey;
+	}
+	#first,#second{
+	background: linear-gradient(#e6e5e5,white);
+	width: 1002px;
+	}
 </style>
 <script type="text/javascript">
 	function formatdate(date){
@@ -698,7 +698,7 @@
 		var z = document.getElementById("second");
 		if (z.style.display ==="block"){
 			z.style.display = "none";
-	    	}
+		}
 	}
  </script>
 <center><body>
