@@ -11,7 +11,7 @@
 	padding: 0px;
 	}
    #container{
-    width: 400px;
+    width: 500px;
     margin-top:10px;
    }
    body{
@@ -27,19 +27,20 @@
 	font-size: 17px;
 	font-family: serif;
 	height: 170px;
-	}
-	form p{
-		margin: 0;
-	margin-top:20px;
-	font-style: italic;
-	float:left
-	}
-	h2{
+   }
+   form p{
+   	margin: 0;
+    margin-top:20px;
+    font-style: italic;
+    float:left;
+	margin-left: 20px;
+   }
+   h2{
 	margin: 0;
 	font-size: 30px;
 	text-align: center;
 	font-style:italic;
-	}
+   }
    hr{
     margin-bottom: 20px;
     border: solid 1px lightgrey;
@@ -59,10 +60,21 @@
 	text-align: left;
 	font-weight: bold;
 	width: 200px;
+	border-bottom:solid 1px #d4cece;
+   	border-right:solid 1px #d4cece;
+   }
+   #table .results{
+	border-bottom:solid 1px #d4cece;
    }
    #table td {
    	padding:3px;
    }
+   #table tr:last-child td {
+   	border-bottom:0;
+   }
+	#news tr:last-child td {
+	border-bottom: 0;
+	}
    td p{
    	margin: 0;
    }
@@ -544,18 +556,18 @@
 	function twolinegraphs(value,api_indicator,indicator){
 		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&slowkmatype=1&slowdmatype=1&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
 		var getJSON = function(url, callback) {
-		    var xhr = new XMLHttpRequest();
-		    xhr.open('GET', url, true);
-		    xhr.responseType = 'json';
-		    xhr.onload = function() {
-		      var status = xhr.status;
-		      if (status === 200) {
-		        callback(null, xhr.response);
-		      } else {
-		        callback(status, xhr.response);
-		      }
-	    	};
-	    	xhr.send();
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url, true);
+			xhr.responseType = 'json';
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status === 200) {
+				callback(null, xhr.response);
+				} else {
+				callback(status, xhr.response);
+				}
+			};
+			xhr.send();
 		};
 		getJSON(url,function(err, json_obj) {
 		  if (err !== null) {
@@ -663,40 +675,40 @@
 	function show(){
 		var x = document.getElementById("news");
 		if (x.style.display === "none") {
-        	x.style.display = "block";
-    	} 
-    	var y = document.getElementById("first");
-    	if (y.style.display ==="block"){
-    		y.style.display = "none";
-    	}
-    	var z = document.getElementById("second");
-    	if (z.style.display ==="none"){
-    		z.style.display = "block";
-    	}
+			x.style.display = "block";
+		} 
+		var y = document.getElementById("first");
+		if (y.style.display ==="block"){
+			y.style.display = "none";
+		}
+		var z = document.getElementById("second");
+		if (z.style.display ==="none"){
+			z.style.display = "block";
+		}
 	}
 	function hide(){
 		var x = document.getElementById("news");
 		if (x.style.display === "block") {
-        	x.style.display = "none";
-    	} 
-    	var y = document.getElementById("first");
-    	if (y.style.display ==="none"){
-    		y.style.display = "block";
-    	}
-    	var z = document.getElementById("second");
-    	if (z.style.display ==="block"){
-    		z.style.display = "none";
-    	}
+			x.style.display = "none";
+		} 
+		var y = document.getElementById("first");
+		if (y.style.display ==="none"){
+			y.style.display = "block";
+		}
+		var z = document.getElementById("second");
+		if (z.style.display ==="block"){
+			z.style.display = "none";
+	    	}
 	}
-</script>
+ </script>
 <center><body>
 	<div id="container">
 		<form method="post">
 			<h2>Stock Search</h2>
 			<hr>
 			Enter the Stock Ticker Symbol*: <input type="text" name="symbol" style="margin-bottom: 8px;" id="s1" value=""<br>
-			<input class="btns" type = "submit" name="Search" value="Search" style="margin-left: 123px;">
-			<input class="btns" type = "reset" name="Clear" value="Clear" id="del" style="padding:3px 13px;">
+			<input class="btns" type = "submit" name="Search" value="Search" style="margin-left: 109px;">
+			<input class="btns" type = "reset" name="Clear" value="Clear" id="del" style="padding:3px 17px;">
 			<p>* - Mandatory</p>
 		</form>
 	</div>
@@ -706,8 +718,8 @@
 			$name = isset($_POST['symbol']) ? $_POST['symbol'] : '';
 			?>	
 			var elem = document.getElementById("s1");
-			var something=<?php echo json_encode($name); ?>;
-			elem.value = something;
+			var clearval=<?php echo json_encode($name); ?>;
+			elem.value = clearval;
 			document.getElementById("del").addEventListener("click",function(){
 				document.getElementById("content").innerHTML="";
 			});
@@ -727,7 +739,7 @@
 					if($obj){
 						echo '<div id = "table">';
 						echo '<table border ="1px" id="infoTable">';
-						if ($obj["Error Message"]){
+						if (sizeof($obj)==1){
 							echo '<tr>';
 							echo '<td class="header">'.'Error'.'</td>';
 							echo '<td>' . 'Error.NO record has been found,please enter a valid symbol' . '</td>';
@@ -744,51 +756,51 @@
 							$changepercent = ($change/$lastsession["4. close"])*100;
 							echo '<tr>';
 							echo '<td class="header">'.'Stock Ticker Symbol'.'</td>';
-							echo '<td>'.$header["2. Symbol"].'</td>';
+							echo '<td class="results">'.$header["2. Symbol"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Close'.'</td>';
-							echo '<td>'.$lastsession["4. close"].'</td>';
+							echo '<td class="results">'.$lastsession["4. close"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Open'.'</td>';
-							echo '<td>'.$lastsession["1. open"].'</td>';
+							echo '<td class="results">'.$lastsession["1. open"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Previous Close'.'</td>';
-							echo '<td>'.$previoussession["4. close"].'</td>';
+							echo '<td class="results">'.$previoussession["4. close"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Change'.'</td>';
 							if ($change>0){
-								echo '<td>'.round($change,2).'<img src="Green_Arrow_Up.png" style="width:10px;margin-left:10px;"></td>';
+								echo '<td class="results">'.round($change,2).'<img src="Green_Arrow_Up.png" style="width:10px;margin-left:10px;"></td>';
 							}else{
-								echo '<td>'.round($change,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
+								echo '<td class="results">'.round($change,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
 							}
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Change Percent'.'</td>';
 							if ($changepercent>0){
-								echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Green_Arrow_Up.png"></td>';
+								echo '<td class="results">'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Green_Arrow_Up.png"></td>';
 							}else{
-								echo '<td>'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
+								echo '<td class="results">'.round($changepercent,2).'<img style="width:10px;margin-left:10px;" src="Red_Arrow_Down.png"></td>';
 							}
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Day\'s Range'.'</td>';
-							echo '<td>'.$lastsession["3. low"].'-'.$lastsession["2. high"].'</td>';
+							echo '<td class="results">'.$lastsession["3. low"].'-'.$lastsession["2. high"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Volume'.'</td>';
-							echo '<td>'.$lastsession["5. volume"].'</td>';
+							echo '<td class="results">'.$lastsession["5. volume"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Timestamp'.'</td>';
-							echo '<td>'.$header["3. Last Refreshed"].'</td>';
+							echo '<td class="results">'.$header["3. Last Refreshed"].'</td>';
 							echo '</tr>';
 							echo '<tr>';
 							echo '<td class="header">'.'Indicators'.'</td>';
-							echo '<td>'.'<p><a href="javascript:void(0);" id="price">Price</a>&nbsp;<a href="javascript:void(0);" id="sma">SMA</a>&nbsp;<a href="javascript:void(0);" id="ema">EMA</a>&nbsp;<a href="javascript:void(0);" id="stoch">STOCH</a>&nbsp;<a href="javascript:void(0);" id="rsi">RSI</a>&nbsp;<a href="javascript:void(0);" id="adx">ADX</a>&nbsp;<a href="javascript:void(0);" id="cci">CCI</a>&nbsp;<a href="javascript:void(0);" id="bbands">BBANDS</a>&nbsp;<a href="javascript:void(0);" id="macd">MACD</a>'.'</td>';
+							echo '<td class="results">'.'<p><a href="javascript:void(0);" id="price">Price</a>&nbsp;<a href="javascript:void(0);" id="sma">SMA</a>&nbsp;<a href="javascript:void(0);" id="ema">EMA</a>&nbsp;<a href="javascript:void(0);" id="stoch">STOCH</a>&nbsp;<a href="javascript:void(0);" id="rsi">RSI</a>&nbsp;<a href="javascript:void(0);" id="adx">ADX</a>&nbsp;<a href="javascript:void(0);" id="cci">CCI</a>&nbsp;<a href="javascript:void(0);" id="bbands">BBANDS</a>&nbsp;<a href="javascript:void(0);" id="macd">MACD</a>'.'</td>';
 							echo '</tr>';
 							echo '</table></div>';
 							$price = array();
