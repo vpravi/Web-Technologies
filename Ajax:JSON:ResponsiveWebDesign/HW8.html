@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://connect.facebook.net/en_US/all.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="HW8.css" rel="stylesheet">
+    <title>Stock Search</title>
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-animate.min.js"></script>
+  <script src = "HW8.js"></script>
+  <meta name=keywords property="og:image" content={src}>
+  <meta property="og:image:width" content="640"> 
+  <meta property="og:image:height" content="442">
+  <body ng-app='my-app'>
+    <div ng-controller="fetchCtrl" ng-init="disable()" id="controller">
+    <div id="container" class="col-lg-9 col-xs-12">
+      <form name="myform" novalidate>
+      <h2>Stock Market Search</h2>
+      <p class = "col-lg-4 col-xs-12">Enter the Stock Ticker Symbol<span id ="red">*</span>:</p>
+      <div class = "col-lg-3 col-xs-12" id="textinput"><input autocomplete="off" class="col-lg-3 col-xs-12" type='text' id = 'textbox' name = 'searchText' ng-model='searchText' ng-keyup='fetchSuggestions()' placeholder = "e.g.AAPL" ng-class="{red: myform.searchText.$invalid && myform.searchText.$dirty}" required /><label for="textbox" ng-show="myform.searchText.$dirty && myform.searchText.$invalid">Please enter a stock ticker symbol</label></div>
+      <button id ="getQuote" class="col-lg-1 col-xs-3 btns" name="searchsymbol" ng-click='fetchsymbol()' ng-model='searchsymbol' add-html><i class="glyphicon glyphicon-search"></i>Get Quote</button>
+      <button id="clear" class="col-lg-1 col-xs-3 btns" name="clear" ng-click="resetform()"><i class="glyphicon glyphicon-refresh"></i>Clear</button></br>
+      <div id='searchResult'>
+        <a ng-click='setValue($index)' ng-repeat="each in searchResult track by $index" ng-if="each.Symbol">
+        {{each.Symbol + "-" + each.Name + '(' + each.Exchange + ')'}}
+        </a>
+      </div>
+    </form>
+    </div></br>
+    <hr class="col-lg-9 col-xs-12">
+    <div id="favourites_container" class="col-lg-9 col-xs-12 animate-hide" ng-hide="slideval" style="display:block;">
+      <div class="col-lg-9" id="favdiv"><p id="header">Favourite List</p><p id="btnheader">Automatic Refresh</p><input class="col-xs-1" id="OFF" type="checkbox" data-toggle="toggle" data-size="mini"><button class="glyphicon glyphicon-refresh" style="margin-left:10px;"></button><button id="enablebtn" class="glyphicon glyphicon-chevron-right" ng-click="showmain()"></button></div>
+      <div id="subform" class="col-lg-9 col-xs 12">
+      <div class="dropdown col-lg-4">
+      <p class="col-lg-3 col-xs-12 dropdown1">Sort By</p>
+        <button class="btn btn-primary dropdown-toggle col-lg-1" id="btnsort" type="button" data-toggle="dropdown"><span id="defaultButtonSpan">Default</span>
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu" id="sort">
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);">Symbol</a></li>
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);">Price</a></li>
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);">Change</a></li>
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);">Change Percent</a></li>
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);">Volume</a></li>
+          <li><a id="show" href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdown(this.innerHTML);" style="display:none;">Default</a></li>
+        </ul>
+      </div>
+      <div class="dropdown col-lg-4">
+      <p class="col-lg-3 col-xs-12 dropdown1">Order</p>
+        <button class="btn btn-primary dropdown-toggle col-lg-1" id = "orderbtn" ng-click="sortby()" type="button" data-toggle="dropdown"><span id="defaultOrderButton">Ascending</span><span class="caret"></span></button>
+        <ul class="dropdown-menu" id="order">
+          <li><a href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdownorder(this.innerHTML);">Descending</a></li>
+          <li><a id ="showasc" href="javascript:void(0)" ng-click="selectorderby()" onclick="dropdownorder(this.innerHTML);" style="display:none;">Ascending</a></li>
+        </ul>
+      </div>
+      <script>
+      $(function(){
+        $("#getQuote").prop("disabled", true ); 
+        $("#textbox").on("change keyup paste click", function(){
+          var input=$.trim($(this).val());
+          if (input.length==0)
+          {
+           $("#getQuote").prop("disabled", true ); 
+          }else{
+            $("#getQuote").prop("disabled", false ); 
+          }
+        });
+        var d = $("#defaultButtonSpan").html();
+        if (d == "Default"){
+          $("#orderbtn").prop("disabled", true );
+        }
+      });
+      </script>
+      <div class="table-responsive col-lg-9" id="favtable">          
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Stock Price</th>
+              <th>Change (Change Percent)</th>
+              <th>Volume</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+    <div class="main-container col-lg-10 col-xs-12 animate-hide" ng-hide="myValue">
+    <div class="col-lg-9" id="maindiv">
+    <button class="glyphicon glyphicon-chevron-left" ng-click="showfavourites()" ></button><p>Stock Details</p></div>
+    <div class="col-lg-9" id="buttons">
+    <button ng-click="showstock()" ><i class="glyphicon glyphicon-dashboard" style="margin-right:5px"></i>Current Stocks</button>
+    <button ng-click="showhist()"><i class="glyphicon glyphicon-stats" style="margin-right:5px"></i>Historical Charts</button>
+    <button ng-click="getnews()"><i class="glyphicon glyphicon-link" style="margin-right:5px"></i>News Feeds</button>
+    </div>
+    <div class="col-xs-12 mobilebtns" id="buttons" style="display:none;">
+    <button class="col-xs-3" ng-click="showstock()" ><i class="glyphicon glyphicon-dashboard" style="margin-right:5px"></i>Stocks</button>
+    <button class="col-xs-3" ng-click="showhist()" ><i class="glyphicon glyphicon-stats" style="margin-right:5px"></i>Charts</button>
+    <button class="col-xs-3" ng-click="getnews()"><i class="glyphicon glyphicon-link" style="margin-right:5px"></i>News</button>
+    </div>
+    <hr id="newline" class="col-lg-5 col-xs-12">
+    <div id="sub_maincontainer" class="col-lg-5 col-xs 12">
+    <div id="left" class="col-lg-5 col-xs-12" style="width: 45%;">
+    <div id="title" class="col-lg-5 col-xs-12">
+    <p>Stock Details</p><button class="glyphicon glyphicon-star-empty" id="star" ng-click="addtofav()"></button><button id="fb" ng-click="sharefb()"><img src="facebook.png"></button>
+    </div>
+    <div class="progress col-lg-5 col-xs-12" id="stockprogress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%"></div></div>
+    <div id = "table" class="col-lg-5 col-xs-12" style="width:100%;clear:both;display:none;">
+    </div>
+    </div>
+    <div id = "indicators" class="col-lg-5 col-xs-12" >
+    <div id = "indicatorsla" class="col-lg-5 col-xs-12 ">
+    <button id="price" ng-click="pricegraph(price,vol,dates,timestamp)">Price</button>&nbsp;
+    <button id="sma" ng-click="ftgraph('sma')">SMA</button>&nbsp;
+    <button id="ema" ng-click="ftgraph('ema')">EMA</button>&nbsp;
+    <button id="stoch" ng-click="ftgraph('stoch')">STOCH</button>&nbsp;
+    <button id="rsi" ng-click="ftgraph('rsi')">RSI</button>&nbsp;
+    <button id="adx" ng-click="ftgraph('adx')">ADX</button>&nbsp;
+    <button id="cci" ng-click="ftgraph('cci')">CCI</button>&nbsp;
+    <button id="bbands" ng-click="ftgraph('bbands')">BBANDS</button>&nbsp;
+    <button id="macd" ng-click="ftgraph('macd')">MACD</button>
+    </div>
+    <hr id="graphline" class="col-lg-5 col-xs-12">
+    <div class="progress col-lg-5 col-xs-12" id="graphprogress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"></div></div>
+    <div id="graph" class="col-lg-5 col-xs-12" style ="width:400px;display:none;"></div>
+    </div>
+    </div>
+    <div id="news_subcontainer" class="col-lg-12" style="display:none;">
+    </div>
+    <div id="historical_subcontainer" class="col-lg-12 col-xs-12" style="display:none;">
+    <div class="progress col-lg-5 col-xs-12" id="histprogress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%"></div></div>
+    </div>
+    </div>
+</div>
+</body>
+</html>
