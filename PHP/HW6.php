@@ -216,7 +216,7 @@
 	    });
 	}
 	function macdgraph(value){
-		var url = 'https://www.alphavantage.co/query?function=macd&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function=macd&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=&outputsize=full';
 		var getJSON = function(url, callback) {
 		    var xhr = new XMLHttpRequest();
 		    xhr.open('GET', url, true);
@@ -339,7 +339,7 @@
 		});
 	}
 	function bbandsgraph(value){
-		var url = 'https://www.alphavantage.co/query?function=BBANDS&symbol='+value+'&interval=daily&time_period=5&series_type=close&nbdevup=3&nbdevdn=3&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function=BBANDS&symbol='+value+'&interval=daily&time_period=5&series_type=close&nbdevup=3&nbdevdn=3&apikey=&outputsize=full';
 		var getJSON = function(url, callback) {
 		    var xhr = new XMLHttpRequest();
 		    xhr.open('GET', url, true);
@@ -463,7 +463,7 @@
 		});
 	}
 	function onelinegraphs(value,api_indicator,indicator,tickinterval){
-		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&series_type=close&apikey=&outputsize=full';
 		var getJSON = function(url, callback) {
 		    var xhr = new XMLHttpRequest();
 		    xhr.open('GET', url, true);
@@ -554,7 +554,7 @@
 		});
 	}
 	function twolinegraphs(value,api_indicator,indicator){
-		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&slowkmatype=1&slowdmatype=1&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full';
+		var url = 'https://www.alphavantage.co/query?function='+api_indicator+'&symbol='+value+'&interval=daily&time_period=10&slowkmatype=1&slowdmatype=1&series_type=close&apikey=&outputsize=full';
 		var getJSON = function(url, callback) {
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', url, true);
@@ -734,7 +734,7 @@
 					echo '</script>';
 			 	}
 			 	else{
-					$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=T9B64Y0EZDLS1SKT&outputsize=full');
+					$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=&outputsize=full');
 					$obj = json_decode($json,true);
 					if($obj){
 						echo '<div id = "table">';

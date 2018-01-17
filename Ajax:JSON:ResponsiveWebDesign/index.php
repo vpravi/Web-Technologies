@@ -7,11 +7,11 @@ function autocomplete($search){
 }	
 
 function getQuote($value){
-	$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=T9B64Y0EZDLS1SKT&outputsize=full');
+	$json = file_get_contents('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='.$value.'&apikey=&outputsize=full');
 	return $json;
 }
 function getGraph($value,$api_indicator){
-	$json = file_get_contents('https://www.alphavantage.co/query?function='.$api_indicator.'&symbol='.$value.'&interval=daily&time_period=10&series_type=close&apikey=T9B64Y0EZDLS1SKT&outputsize=full');
+	$json = file_get_contents('https://www.alphavantage.co/query?function='.$api_indicator.'&symbol='.$value.'&interval=daily&time_period=10&series_type=close&apikey=&outputsize=full');
 	return $json;
 
 }
